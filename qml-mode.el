@@ -26,6 +26,7 @@
 
 (require 'generic-x)
 (require 'font-lock)
+(require 'thingatpt)
 
 (defvar qml-mode-indent-offset 4
   "Indentation offset for `qml-mode'")
@@ -187,8 +188,9 @@
               (indent-to depth))
           (if (> depth 0)
               (indent-to depth)))))
-    (if (looking-at "[ \t]*")
-        (end-of-line) )))
+    (if (looking-at "^[ \t]*")
+        (forward-whitespace 1))
+    ))
 
 
 (defun qml-mode-indent-region (start end)
