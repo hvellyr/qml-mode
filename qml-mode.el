@@ -51,6 +51,7 @@
     "Column" "Row" "Grid" "Flow"
     "SoundEffect" "Audio" "Video" "Particles"
     "ParticleMotionLinear" "ParticleMotionGravity" "ParticleMotionWander"
+    "readonly"
     ;; javascript keywords
     "break"
     "case" "catch" "const" "continue"
@@ -72,7 +73,7 @@
 (defvar qml-mode-types
   '("int" "bool" "double" "real"
     "string" "url" "color" "date"
-    "variant" "alias"
+    "variant" "alias" "var"
     "signal" "on" "parent" "as"))
 
 (defvar qml-mode-constants
@@ -91,7 +92,9 @@
     "OutInCirc" "InElastic" "OutElastic" "InOutElastic"
     "OutInElastic" "InBack" "OutBack" "InOutBack"
     "OutInBack" "InBounce" "OutBounce" "InOutBounce"
-    "OutInBounce"))
+    "OutInBounce"
+    "StopAtBounds" "DragOverBounds" "DragAndOvershootBounds"
+    "VerticalFlick" "HorizontalFlick" "AutoFlickDirection" "HorizontalAndVerticalFlick"))
 
 
 (defun qml-mode:list-to-string (list)
