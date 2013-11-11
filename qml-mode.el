@@ -97,11 +97,13 @@
     "VerticalFlick" "HorizontalFlick" "AutoFlickDirection" "HorizontalAndVerticalFlick"))
 
 
-(defun qml-mode:list-to-string (list)
+(defun qml-mode:types-list (list)
   ""
   (concat "\\("
           (mapconcat 'identity list "\\|")
+          "\\|[a-zA-Z0-9_]+\\(<[a-zA-Z0-9_]+>\\)?"
           "\\)"))
+
 
 ;;;###autoload
 (define-generic-mode qml-mode
@@ -117,7 +119,9 @@
      (generic-make-keywords-list qml-mode-constants 'font-lock-constant-face))
    (list "\\<id[ \t]*:[ \t]*\\([a-zA-Z0-9_]+\\)" 1 'font-lock-constant-face)
    (list
-    (concat "property[ \t]+" (qml-mode:list-to-string qml-mode-types) "+[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)") 2 'font-lock-variable-name-face)
+    (concat "property[ \t]+" (qml-mode:types-list qml-mode-types) "+[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)")
+    '(1 font-lock-type-face)
+    '(3 font-lock-variable-name-face))
    (list "\\(function\\|signal\\)\\{1\\}[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 2 'font-lock-function-name-face)
    (list "\\([a-zA-Z_\\.]+[a-zA-Z0-9_]*\\)[ \t]*:" 1 'font-lock-type-face)
    (list "\\([+-]?\\<[0-9]*\\.?[0-9]+[xX]?[0-9a-fA-F]*\\)" 1 'font-lock-constant-face)
