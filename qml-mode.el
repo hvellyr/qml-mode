@@ -13,7 +13,7 @@
 
 ;;; INTRODUCTION
 ;;
-;; You need this if you are writing Ubuntu Phone apps with Emacs.
+;; You need this if you are writing QML/Js files with Emacs.
 ;;
 
 ;;; USAGE
