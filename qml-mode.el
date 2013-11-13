@@ -50,6 +50,20 @@
 (require 'js)
 (require 'cc-mode)
 
+;; ---------------------------------------------------------------------------
+;; VARIABLES
+;; Set a number of global variable for customization, global constants, etc.
+;; ---------------------------------------------------------------------------
+(defgroup qml nil
+  "Customizations for QML Mode."
+  :prefix "qml-"
+  :group 'languages)
+
+
+;; ---------------------------------------------------------------------------
+;; KEYWORDS
+;; ---------------------------------------------------------------------------
+
 (defvar qml-keywords
   '("Qt" "import" "property"
     "State" "PropertyChanges" "StateGroup" "ParentChange"
@@ -213,6 +227,7 @@ Key bindings:
 (define-key qml-mode-map "\M-\C-e" 'qml-end-of-defun)
 (define-key qml-mode-map "\M-\C-h" 'qml-mark-defun)
 (define-key qml-mode-map "\C-c." 'qml-expand-abbrev)
+(define-key qml-mode-map "\C-c\C-r" 'run-qmlscene)
 
 (defconst qml-defun-start-regexp "\{")
 
@@ -291,6 +306,70 @@ Key bindings:
                           '(try-expand-dabbrev
                             try-expand-dabbrev-all-buffers
                             qml-try-expand-abbrev)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Run qmlscene
+
+(require 'comint)
+(require 'compile)
+
+(defcustom qml-qmlscene-command "qmlscene"
+  "*Command to run qmlscene"
+  :type 'string
+  :group 'qml)
+
+(defcustom qml-qmlscene-ask-about-save t
+  "Non-nil means \\[run-qmlscene] asks which buffers to save before starting qmlscene.
+Otherwise, it saves all modified buffers without asking."
+  :type 'boolean
+  :group 'qml)
+
+;; History of compile commands.
+(defvar qml-qmlscene-history nil)
+
+(defun qml-qmlscene-read-command (command)
+  (read-shell-command "Compile qmlscene: " command
+                      (if (equal (car qml-qmlscene-history) command)
+                          '(qml-qmlscene-history . 1)
+                        'qml-qmlscene-history)))
+
+(defun run-qmlscene (command &optional comint)
+  "Run QmlScene.  Default: run `qml-qmlscene-command'.
+Runs COMMAND, a shell command, in a separate process asynchronously with
+output going to the buffer `*compilation*'.
+
+You can then use the command \\[next-error] to find the next error message
+and move to the source code that caused it.
+
+If optional second arg COMINT is t the buffer will be in Comint mode with
+`compilation-shell-minor-mode'.
+
+Interactively prompts for the command; otherwise uses
+`qml-qmlscene-command'.  With prefix arg, always prompts.
+Additionally, with universal prefix arg, compilation buffer will
+be in comint mode, i.e. interactive.
+
+To run more than one qmlscene instance at once, start one then rename
+the \`*compilation*' buffer to some other name with
+\\[rename-buffer].  Then _switch buffers_ and start the new compilation.
+It will create a new \`*compilation*' buffer.
+
+On most systems, termination of the main qmlscene process kills
+its subprocesses.
+
+The name used for the buffer is actually whatever is returned by the function
+in `compilation-buffer-name-function', so you can set that
+to a function that generates a unique name."
+  (interactive
+   (list (let ((command (eval qml-qmlscene-command)))
+           (qml-qmlscene-read-command command))
+         (consp current-prefix-arg)))
+  (unless (equal command (eval qml-qmlscene-command))
+    (setq qml-qmlscene-command command))
+  (save-some-buffers (not qml-qmlscene-ask-about-save) nil)
+  ;;  (setq-default compilation-directory default-directory)
+  (compilation-start command comint))
 
 (provide 'qml-mode)
 
