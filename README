@@ -1,5 +1,4 @@
 Qt Declarative UI (QML) mode for Emacs
 
-This file is based on cataska's qml-mode,
-
-I rewrite it with emacs generic-mode.
+Originally based on work of Wen-Chun Lin (cataska), William Xu (xwl),
+Yen-Chin,Lee (coldnew).
