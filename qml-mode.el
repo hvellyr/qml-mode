@@ -46,9 +46,8 @@
 ;;
 
 
-(require 'css-mode)
 (require 'js)
-(require 'cc-mode)
+(require 'cc-langs)
 
 ;; ---------------------------------------------------------------------------
 ;; VARIABLES
@@ -170,7 +169,7 @@
     table))
 
 ;;;###autoload
-(define-derived-mode qml-mode css-mode "QML"
+(define-derived-mode qml-mode js-mode "QML"
   "Major mode for editing Qt QML files.
 
 Usage:
