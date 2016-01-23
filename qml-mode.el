@@ -49,10 +49,12 @@
 (require 'js)
 (require 'cc-langs)
 
+
 ;; ---------------------------------------------------------------------------
 ;; VARIABLES
 ;; Set a number of global variable for customization, global constants, etc.
 ;; ---------------------------------------------------------------------------
+
 (defgroup qml nil
   "Customizations for QML Mode."
   :prefix "qml-"
@@ -79,7 +81,7 @@
     "StateGroup" "SystemPalette" "Text" "TextEdit" "TextInput" "Timer"
     "Transition" "Translate" "Video" "ViewsPositionersMediaEffects"
     "VisualDataModel" "VisualItemModel" "WebView" "WorkerScript" "XmlListModel"
-    "XmlRole" "import" "property" "readonly"
+    "XmlRole" "import"
     ;; javascript keywords
     "break" "case" "catch" "const" "continue" "debugger" "default" "delete" "do"
     "else" "enum" "false" "false" "finally" "for" "function" "if" "import"
@@ -88,7 +90,7 @@
     ))
 
 (defvar qml-types
-  '("alias" "as" "bool" "color" "date" "double" "int" "on" "parent" "readonly"
+  '("alias" "as" "bool" "color" "date" "double" "int" "on" "parent"
     "real" "signal" "string" "url" "var" "variant" ))
 
 (defvar qml-constants
@@ -118,10 +120,10 @@
 
 (defun qml-types-pattern ()
   ""
-  (concat "\\("
-          (mapconcat 'identity qml-types "\\|")
-          "\\|[a-zA-Z0-9_]+\\(<[a-zA-Z0-9_]+>\\)?"
-          "\\)"))
+  (concat (mapconcat 'identity qml-types "\\|")
+          "\\|[a-zA-Z0-9_]+"
+          "\\|[a-zA-Z0-9_]+<[a-zA-Z0-9_]+>"
+          ))
 
 (defun qml-builtin-properties-pattern ()
   ""
@@ -138,21 +140,28 @@
        (generic-make-keywords-list qml-types 'font-lock-type-face))
     ,(eval-when-compile
        (generic-make-keywords-list qml-constants 'font-lock-constant-face))
-    ("\\<id[ \t]*:[ \t]*\\([a-zA-Z0-9_]+\\)" (1 font-lock-constant-face))
-    (,(concat "property[ \t]+" (qml-types-pattern) "+[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)")
-     (1 font-lock-type-face)
-     (3 font-lock-variable-name-face))
+    ("\\<\\(id\\)[ \t]*:[ \t]*\\([a-zA-Z0-9_]+\\)"
+     (1 font-lock-builtin-face)
+     (2 font-lock-constant-face))
+    (,(concat "\\(property\\)[ \t]+\\(" (qml-types-pattern) "\\)\\([ \t]+[a-zA-Z_]+[a-zA-Z0-9_]*\\)")
+     (1 font-lock-keyword-face)
+     (2 font-lock-type-face)
+     (3 font-lock-variable-name-face)
+     )
+    (,(concat "\\(property\\)[ \t]+\\(readonly[ \t]+\\)\\(" (qml-types-pattern) "\\)\\([ \t]+[a-zA-Z_]+[a-zA-Z0-9_]*\\)")
+     (1 font-lock-keyword-face)
+     (2 font-lock-keyword-face)
+     (3 font-lock-type-face)
+     (4 font-lock-variable-name-face)
+     )
 
     (,(qml-builtin-properties-pattern) (1 font-lock-builtin-face))
     (,(concat qml-keywords-pattern "\\|\\<parent\\>") ; keywords
      (0 font-lock-keyword-face nil t))
-    ("\\(function\\|signal\\)\\{1\\}[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" (2 font-lock-function-name-face))
-    ("\\([a-zA-Z_\\.]+[a-zA-Z0-9_]*\\)[ \t]*:" (1 font-lock-type-face))
+    ("\\(function\\|signal\\)[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" (2 font-lock-function-name-face))
+    ("\\([a-zA-Z_\\.0-9]+\\):" (1 font-lock-variable-name-face))
+    ("\\([a-zA-Z_\\.0-9]+\\)[ \t]*{" (1 font-lock-builtin-face))
     ("\\([+-]?\\<[0-9]*\\.?[0-9]+[xX]?[0-9a-fA-F]*\\)" (1 font-lock-constant-face))
-;    ("\\<\\([A-Z][a-zA-Z0-9]*\\)\\>"    ; Elements
-;     (1 font-lock-function-name-face nil t)
-;     (2 font-lock-function-name-face nil t))
-    ("\\([a-zA-Z0-9]+\\)[ \t]*{" (1 font-lock-builtin-face))
     ("\\('[[:alpha:]]*'\\)" (1 font-lock-string-face))
     )
   "Keywords to highlight in `qml-mode'.")
