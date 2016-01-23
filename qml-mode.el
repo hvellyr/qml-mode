@@ -177,6 +177,14 @@
     (modify-syntax-entry ?' "\"" table)
     table))
 
+
+(defcustom qml-indent-level 4
+  "Number of spaces for each indentation step in `qml-mode'."
+  :type 'integer
+  :safe 'integerp
+  :group 'qml)
+
+
 ;;;###autoload
 (define-derived-mode qml-mode js-mode "QML"
   "Major mode for editing Qt QML files.
@@ -204,6 +212,7 @@ Key bindings:
   (set (make-local-variable 'require-final-newline) t)
   (set (make-local-variable 'comment-column) 40)
   (set (make-local-variable 'end-comment-column) 79)
+  (set (make-local-variable 'js-indent-level) qml-indent-level)
   (run-hooks 'qml-mode-hook))
 
 (define-key qml-mode-map "\M-\C-a" 'qml-beginning-of-defun)
