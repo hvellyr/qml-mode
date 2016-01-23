@@ -1,9 +1,11 @@
 ;;; qml-mode.el --- Major mode for editing QT Declarative (QML) code.
 ;;
-;; Copyright (C) 2013 Gregor Klinke
+;; Copyright (C) 2013,2016 Gregor Klinke
 ;;
 ;; Author: Gregor Klinke <gck@eyestep.org>
-;; URL: https://github.com/coldnew/qml-mode
+;; URL: https://github.com/hvellyr/qml-mode
+;;
+;; Based on original work by others.  Esp.:
 ;;
 ;; Original author:
 ;; Author: William Xu <william.xwl@gmail.com>
